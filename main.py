@@ -1,6 +1,7 @@
 from utils.query_classifier import QueryClassifier
 from utils.location_extractor import LocationExtractor
 from utils.response_generator import ResponseGenerator
+from utils.time_period_extractor import TimePeriodExtractor
 from config import QUERY_TYPES, DISASTER_TYPES
 
 class DisasterAssistant:
@@ -8,6 +9,7 @@ class DisasterAssistant:
         self.query_classifier = QueryClassifier()
         self.location_extractor = LocationExtractor()
         self.response_generator = ResponseGenerator()
+        self.time_period_extractor = TimePeriodExtractor()
 
     def process_query(self, query):
         # Classify the query
@@ -15,6 +17,9 @@ class DisasterAssistant:
         
         # Extract locations
         locations = self.location_extractor.extract_location(query)
+        
+        # Extract time periods
+        time_periods = self.time_period_extractor.extract_time_period(query)
         
         # Generate response
         response = self.response_generator.generate_response(
@@ -28,6 +33,7 @@ class DisasterAssistant:
             "query": query,
             "classification": classification,
             "locations": locations,
+            "time_periods": time_periods,
             "response": response
         }
         
@@ -49,6 +55,11 @@ class DisasterAssistant:
             output.append("\nLocations Found:")
             for loc in result['locations']:
                 output.append(f"- {loc['text']} ({loc['type']})")
+        
+        if result.get('time_periods'):
+            output.append("\nTime Periods Found:")
+            for period in result['time_periods']:
+                output.append(f"- {period}")
         
         output.append("\nResponse:")
         output.append(result['response'])
