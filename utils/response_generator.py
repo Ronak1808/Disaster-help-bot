@@ -1,6 +1,7 @@
 from utils.safety_guidelines import get_safety_guidelines
 import spacy
 from config import QUERY_TYPES
+from utils.earthquake_alert_fetcher import EarthquakeAlertFetcher
 
 class ResponseGenerator:
     def __init__(self):
@@ -25,6 +26,8 @@ class ResponseGenerator:
             "blizzard": ["blizzard", "snowstorm", "winter storm", "snow squall", "whiteout"],
             "drought": ["drought", "dry spell", "water shortage", "arid conditions", "water scarcity"]
         }
+
+        self.earthquake_alert_fetcher = EarthquakeAlertFetcher()
 
     def _detect_phase(self, query):
         """Detect the phase of the disaster mentioned in the query"""
@@ -51,10 +54,28 @@ class ResponseGenerator:
         
         return None
 
-    def generate_response(self, query_type, disaster_type, query):
+    def generate_response(self, query_type, disaster_type, query, locations=None, time_periods=None):
         """Generate response based on query type and disaster type"""
         if query_type == QUERY_TYPES["SAFETY_GUIDELINES"]:
             return self._generate_safety_response(disaster_type, query)
+        elif query_type == 'future_alerts' and disaster_type == 'earthquake' and locations:
+            # Support country, state, and city
+            for loc in locations:
+                if loc['type'] in ('country', 'state', 'city'):
+                    try:
+                        alerts = self.earthquake_alert_fetcher.fetch_alerts(loc['text'], loc['type'], time_periods)
+                        if isinstance(alerts, dict) and 'error' in alerts:
+                            return f"[USGS API Error] {alerts['error']}"
+                        if not alerts:
+                            return f"No significant earthquakes forecasted in {loc['text']} for the specified period."
+                        response_lines = [f"Top {len(alerts)} earthquake events in {loc['text']}:"]
+                        for i, event in enumerate(alerts, 1):
+                            response_lines.append(
+                                f"{i}. Magnitude {event['magnitude']} at {event['place']} on {event['time']} (Depth: {event['depth']} km) [More info]({event['url']})"
+                            )
+                        return '\n'.join(response_lines)
+                    except Exception as e:
+                        return f"[Error fetching earthquake alerts: {str(e)}]"
         # Add other query type handlers here
         return "I'm sorry, I can't process this type of query yet."
 

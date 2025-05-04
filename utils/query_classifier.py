@@ -2,6 +2,7 @@ from transformers import AutoTokenizer, AutoModel
 import torch
 import torch.nn.functional as F
 from config import QUERY_TYPES, DISASTER_TYPES
+from textblob import TextBlob
 
 class QueryClassifier:
     def __init__(self):
@@ -9,7 +10,7 @@ class QueryClassifier:
         self.tokenizer = AutoTokenizer.from_pretrained('sentence-transformers/all-MiniLM-L6-v2')
         self.model = AutoModel.from_pretrained('sentence-transformers/all-MiniLM-L6-v2')
         
-        # Define reference queries for each type with more variations
+        # Expanded reference queries for each type with more variations and common typos
         self.reference_queries = {
             QUERY_TYPES["SAFETY_GUIDELINES"]: [
                 "what should i do during an earthquake",
@@ -36,7 +37,18 @@ class QueryClassifier:
                 "wildfire safety procedures",
                 "how to survive a wildfire",
                 "wildfire emergency response",
-                "wildfire preparedness tips"
+                "wildfire preparedness tips",
+                # Common typos and variations
+                "what shuold i do during an earthquake",
+                "what shuld i do during an earthquake",
+                "what should i do in case of an earthquake",
+                "how to stay safe during an earthquke",
+                "what to do in case of earthquke",
+                "how to be safe in an earthquake",
+                "what to do if earthquake happens",
+                "what to do if there is an earthquake",
+                "what to do during earthquake",
+                "what to do in earthquake"
             ],
             QUERY_TYPES["HISTORICAL_INFO"]: [
                 "tell me about past earthquakes",
@@ -48,7 +60,13 @@ class QueryClassifier:
                 "notable earthquakes in the past",
                 "earthquake history",
                 "major seismic events",
-                "famous earthquake incidents"
+                "famous earthquake incidents",
+                # Variations
+                "tell me about previous earthquakes",
+                "earthquake events in the past",
+                "earthquake records",
+                "earthquake statistics",
+                "earthquake data from previous years"
             ],
             QUERY_TYPES["FUTURE_ALERTS"]: [
                 "are there any upcoming earthquake alerts",
@@ -60,7 +78,14 @@ class QueryClassifier:
                 "seismic activity predictions",
                 "future earthquake risks",
                 "earthquake early warnings",
-                "seismic hazard alerts"
+                "seismic hazard alerts",
+                # Variations
+                "is there any earthquake alert for india",
+                "is there any earthquake alert for next 10 days",
+                "earthquake alert for this week",
+                "earthquake alert for today",
+                "earthquake alert for tomorrow",
+                "any earthquake warning for my area"
             ]
         }
         
@@ -89,6 +114,8 @@ class QueryClassifier:
         return F.cosine_similarity(a.unsqueeze(0), b.unsqueeze(0)).item()
 
     def classify_query(self, query):
+        # Step 1: Spell correction (general, not hand-crafted)
+        corrected_query = str(TextBlob(query).correct())
         # Initialize result
         result = {
             "query_type": None,
@@ -96,53 +123,67 @@ class QueryClassifier:
             "confidence": 0.0
         }
         
-        # Get embedding for the input query
-        query_embedding = self._get_embeddings([query])[0]
+        # Step 2: Get embedding for the input query
+        query_embedding = self._get_embeddings([corrected_query])[0]
         
-        # Check for disaster type using keyword matching and semantic similarity
+        # Step 3: Disaster type detection (embedding + fallback keyword)
         disaster_terms = {
             "earthquake": ["earthquake", "quake", "tremor", "seismic", "tectonic", "epicenter"],
             "weather": ["storm", "hurricane", "tornado", "flood", "cyclone", "typhoon", 
                        "wildfire", "bushfire", "forest fire", "heat wave", "blizzard", 
                        "tsunami", "drought", "heavy rain"]
         }
-        
-        # First try exact matching
-        query_lower = query.lower()
+        # Try exact matching
+        query_lower = corrected_query.lower()
         for disaster, terms in disaster_terms.items():
             if any(term in query_lower for term in terms):
                 result["disaster_type"] = disaster
                 break
-        
         # If no exact match, try semantic similarity with disaster terms
         if not result["disaster_type"]:
             disaster_embeddings = {
                 disaster: self._get_embeddings(terms)
                 for disaster, terms in disaster_terms.items()
             }
-            
             max_similarity = 0.5  # Threshold
             for disaster, embeddings in disaster_embeddings.items():
                 similarity = self._cosine_similarity(query_embedding, embeddings[0])
                 if similarity > max_similarity:
                     max_similarity = similarity
                     result["disaster_type"] = disaster
-        
-        # Calculate similarity with each query type
+        # Step 4: Query type detection (max similarity)
         similarities = {}
         for query_type, ref_embeddings in self.reference_embeddings.items():
-            # Calculate cosine similarity between query and all reference queries
-            similarity = torch.mean(torch.tensor([
+            # Use max similarity instead of mean
+            similarity = max([
                 self._cosine_similarity(query_embedding, ref_embedding)
                 for ref_embedding in ref_embeddings
-            ])).item()
+            ])
             similarities[query_type] = similarity
-        
         # Get the best matching query type
         if similarities:
             best_type = max(similarities.items(), key=lambda x: x[1])
-            if best_type[1] > 0.3:  # Lowered threshold to be more lenient
+            threshold = 0.4  # Tuned threshold for better accuracy
+            if best_type[1] > threshold:
                 result["query_type"] = best_type[0]
                 result["confidence"] = best_type[1]
-        
-        return result 
+            else:
+                # Fallback: keyword matching for query type
+                safety_keywords = ["should i do", "safety", "guidelines", "how to stay safe", "what to do", "protect yourself", "survive", "emergency response", "preparedness tips"]
+                hist_keywords = ["past", "history", "historical", "previous", "records", "statistics", "data"]
+                alert_keywords = ["alert", "warning", "forecast", "prediction", "upcoming", "next", "early warning"]
+                if any(kw in query_lower for kw in safety_keywords):
+                    result["query_type"] = QUERY_TYPES["SAFETY_GUIDELINES"]
+                    result["confidence"] = 0.35
+                elif any(kw in query_lower for kw in hist_keywords):
+                    result["query_type"] = QUERY_TYPES["HISTORICAL_INFO"]
+                    result["confidence"] = 0.35
+                elif any(kw in query_lower for kw in alert_keywords):
+                    result["query_type"] = QUERY_TYPES["FUTURE_ALERTS"]
+                    result["confidence"] = 0.35
+        return result
+
+# For manual testing
+
+def correct_spelling(query):
+    return str(TextBlob(query).correct()) 
