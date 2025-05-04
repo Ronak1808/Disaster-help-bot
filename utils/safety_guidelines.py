@@ -1,27 +1,51 @@
 SAFETY_GUIDELINES = {
     "earthquake": {
         "before": [
-            "Identify safe spots in each room (under sturdy furniture, against inside walls)",
-            "Practice 'Drop, Cover, and Hold On' with family members",
-            "Secure heavy furniture and appliances to walls",
-            "Keep emergency supplies ready (water, food, flashlight, first aid kit)",
-            "Know how to turn off gas, water, and electricity"
+            "Secure heavy items and furniture to walls.",
+            "Prepare an emergency kit with food, water, and first aid supplies.",
+            "Identify safe spots in each room, such as under sturdy tables.",
+            "Practice earthquake drills with your family."
         ],
         "during": [
-            "DROP to the ground",
-            "Take COVER under a sturdy table or desk",
-            "HOLD ON until the shaking stops",
-            "Stay indoors until the shaking stops and you're sure it's safe to exit",
-            "If you're in bed, stay there and protect your head with a pillow",
-            "Stay away from windows, glass, and exterior doors"
+            "Drop, cover, and hold on until the shaking stops.",
+            "Stay away from windows and heavy objects that could fall.",
+            "If outdoors, move to an open area away from buildings and power lines.",
+            "If driving, stop in a safe place and stay inside the vehicle."
         ],
         "after": [
-            "Check yourself and others for injuries",
-            "Check for gas leaks and turn off gas if you smell it",
-            "Check for electrical system damage",
-            "Be prepared for aftershocks",
-            "Listen to the radio for emergency information",
-            "Use the telephone only for emergency calls"
+            "Check yourself and others for injuries.",
+            "Be prepared for aftershocks.",
+            "Inspect your home for damage and hazards.",
+            "Listen to emergency broadcasts and follow official instructions."
+        ],
+        "general": [
+            "Be prepared, stay calm, and follow safety protocols during an earthquake."
+        ]
+    },
+    "flood": {
+        "before": [
+            "Know your area's flood risk and evacuation routes.",
+            "Prepare an emergency kit with food, water, flashlight, and first aid supplies.",
+            "Keep important documents in a waterproof container.",
+            "Move valuables and electrical items to higher floors.",
+            "Install check valves in plumbing to prevent floodwater backup."
+        ],
+        "during": [
+            "Move to higher ground immediately if there is a flood warning.",
+            "Avoid walking or driving through floodwaters.",
+            "Stay away from bridges over fast-moving water.",
+            "Listen to emergency broadcasts and follow evacuation orders.",
+            "Disconnect electrical appliances if safe to do so."
+        ],
+        "after": [
+            "Return home only when authorities say it is safe.",
+            "Avoid floodwater as it may be contaminated.",
+            "Clean and disinfect everything that got wet.",
+            "Watch out for snakes and other animals displaced by floods.",
+            "Document property damage with photos for insurance claims."
+        ],
+        "general": [
+            "Stay informed, avoid floodwaters, and follow official instructions during a flood."
         ]
     },
     "weather": {
@@ -41,16 +65,6 @@ SAFETY_GUIDELINES = {
             "Clear gutters and drains to prevent water buildup",
             "Have sandbags ready if you're in a flood-prone area",
             "Keep important documents and valuables in waterproof containers"
-        ],
-        "flood": [
-            "Move to higher ground immediately",
-            "Do not walk or drive through flood waters",
-            "Stay away from bridges over fast-moving water",
-            "Evacuate if told to do so",
-            "Turn off utilities at the main switches if instructed",
-            "Keep emergency supplies including food, water, and medications",
-            "Have a battery-powered radio for updates",
-            "Stay away from electrical equipment if you're wet"
         ],
         "tsunami": [
             "Move to higher ground immediately if you're near the coast",
@@ -138,24 +152,27 @@ def get_safety_guidelines(disaster_type, phase=None):
     Get safety guidelines for a specific disaster type and phase.
     
     Args:
-        disaster_type (str): Type of disaster (e.g., 'earthquake', 'weather')
+        disaster_type (str): Type of disaster (e.g., 'earthquake', 'flood')
         phase (str, optional): Phase of the disaster (e.g., 'before', 'during', 'after')
-                             For weather, can be 'general', 'heavy_rain', 'flood', etc.
-    
+                             For weather, can be 'general', 'heavy_rain', etc.
     Returns:
         list: List of safety guidelines
     """
     if disaster_type not in SAFETY_GUIDELINES:
-        return ["No specific guidelines available for this type of disaster."]
+        return ["No safety guidelines available for this disaster type."]
     
     if phase:
         if phase in SAFETY_GUIDELINES[disaster_type]:
             return SAFETY_GUIDELINES[disaster_type][phase]
+        elif "general" in SAFETY_GUIDELINES[disaster_type]:
+            return SAFETY_GUIDELINES[disaster_type]["general"]
         else:
             return ["No specific guidelines available for this phase."]
     
-    # If no phase specified, return all guidelines
+    # If no phase specified, return all guidelines (before, during, after, general, etc.)
     all_guidelines = []
-    for phase_guidelines in SAFETY_GUIDELINES[disaster_type].values():
-        all_guidelines.extend(phase_guidelines)
-    return all_guidelines 
+    for key in SAFETY_GUIDELINES[disaster_type]:
+        all_guidelines.extend(SAFETY_GUIDELINES[disaster_type][key])
+    if all_guidelines:
+        return all_guidelines
+    return ["No safety guidelines available for this disaster type."] 

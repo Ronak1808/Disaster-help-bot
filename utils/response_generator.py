@@ -2,6 +2,7 @@ from utils.safety_guidelines import get_safety_guidelines
 import spacy
 from config import QUERY_TYPES
 from utils.earthquake_alert_fetcher import EarthquakeAlertFetcher
+from utils.flood_alert_fetcher import FloodAlertFetcher
 
 class ResponseGenerator:
     def __init__(self):
@@ -28,6 +29,7 @@ class ResponseGenerator:
         }
 
         self.earthquake_alert_fetcher = EarthquakeAlertFetcher()
+        self.flood_alert_fetcher = FloodAlertFetcher()
 
     def _detect_phase(self, query):
         """Detect the phase of the disaster mentioned in the query"""
@@ -76,10 +78,41 @@ class ResponseGenerator:
                         return '\n'.join(response_lines)
                     except Exception as e:
                         return f"[Error fetching earthquake alerts: {str(e)}]"
+        elif query_type == 'future_alerts' and disaster_type == 'flood' and locations:
+            for loc in locations:
+                if loc['type'] in ('country', 'state', 'city'):
+                    try:
+                        alerts = self.flood_alert_fetcher.fetch_alerts(loc['text'], loc['type'], time_periods)
+                        if isinstance(alerts, dict) and 'error' in alerts:
+                            return f"[GDACS API Error] {alerts['error']}"
+                        if not alerts:
+                            return f"No significant flood alerts forecasted in {loc['text']} for the specified period."
+                        response_lines = [f"Top {len(alerts)} flood alerts in {loc['text']}:"]
+                        for i, event in enumerate(alerts, 1):
+                            response_lines.append(
+                                f"{i}. {event['title']} on {event['date']}\n   {event['description']}\n   [More info]({event['link']})"
+                            )
+                        return '\n'.join(response_lines)
+                    except Exception as e:
+                        return f"[Error fetching flood alerts: {str(e)}]"
         # Add other query type handlers here
         return "I'm sorry, I can't process this type of query yet."
 
     def _generate_safety_response(self, disaster_type, query):
+        """Generate safety guidelines response"""
+        phase = self._detect_phase(query)
+        # Always use the disaster_type directly for top-level types
+        guidelines = get_safety_guidelines(disaster_type, phase)
+        response = [f"Here are the safety guidelines for {disaster_type}"]
+        if phase:
+            response.append(f"({phase} phase):")
+        else:
+            response.append(":")
+        for i, guideline in enumerate(guidelines, 1):
+            response.append(f"{i}. {guideline}")
+        return "\n".join(response)
+
+    def _generate_safety_response_old(self, disaster_type, query):
         """Generate safety guidelines response"""
         if disaster_type == "earthquake":
             phase = self._detect_phase(query)

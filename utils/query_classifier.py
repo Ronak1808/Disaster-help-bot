@@ -48,7 +48,32 @@ class QueryClassifier:
                 "what to do if earthquake happens",
                 "what to do if there is an earthquake",
                 "what to do during earthquake",
-                "what to do in earthquake"
+                "what to do in earthquake",
+                # Flood
+                "what should i do during a flood",
+                "how to stay safe in a flood",
+                "flood safety measures",
+                "what are the safety guidelines for floods",
+                "how to protect yourself during a flood",
+                "what actions to take during a flood",
+                "flood safety procedures",
+                "how to survive a flood",
+                "flood emergency response",
+                "flood preparedness tips",
+                "what should one do in case of flood",
+                "safety tips for floods",
+                "how to be safe during a flood",
+                "what to do when there is a flood",
+                "flood safety instructions",
+                # Typos/variations
+                "what should i do in case of a flood",
+                "how to stay safe during a flod",
+                "what to do in case of flud",
+                "how to be safe in a flood",
+                "what to do if flood happens",
+                "what to do if there is a flood",
+                "what to do during flood",
+                "what to do in flood"
             ],
             QUERY_TYPES["HISTORICAL_INFO"]: [
                 "tell me about past earthquakes",
@@ -66,7 +91,24 @@ class QueryClassifier:
                 "earthquake events in the past",
                 "earthquake records",
                 "earthquake statistics",
-                "earthquake data from previous years"
+                "earthquake data from previous years",
+                # Flood
+                "tell me about past floods",
+                "what are some famous floods",
+                "historical flood information",
+                "major floods in history",
+                "famous past floods",
+                "significant flood events",
+                "notable floods in the past",
+                "flood history",
+                "major flood events",
+                "famous flood incidents",
+                # Variations
+                "tell me about previous floods",
+                "flood events in the past",
+                "flood records",
+                "flood statistics",
+                "flood data from previous years"
             ],
             QUERY_TYPES["FUTURE_ALERTS"]: [
                 "are there any upcoming earthquake alerts",
@@ -85,7 +127,25 @@ class QueryClassifier:
                 "earthquake alert for this week",
                 "earthquake alert for today",
                 "earthquake alert for tomorrow",
-                "any earthquake warning for my area"
+                "any earthquake warning for my area",
+                # Flood
+                "are there any upcoming flood alerts",
+                "future flood warnings",
+                "flood predictions",
+                "next flood alerts",
+                "upcoming flood warnings",
+                "flood forecast",
+                "flood risk predictions",
+                "future flood risks",
+                "flood early warnings",
+                "flood hazard alerts",
+                # Variations
+                "is there any flood alert for india",
+                "is there any flood alert for next 10 days",
+                "flood alert for this week",
+                "flood alert for today",
+                "flood alert for tomorrow",
+                "any flood warning for my area"
             ]
         }
         
@@ -129,7 +189,8 @@ class QueryClassifier:
         # Step 3: Disaster type detection (embedding + fallback keyword)
         disaster_terms = {
             "earthquake": ["earthquake", "quake", "tremor", "seismic", "tectonic", "epicenter"],
-            "weather": ["storm", "hurricane", "tornado", "flood", "cyclone", "typhoon", 
+            "flood": ["flood", "flooding", "inundation", "deluge", "overflow", "waterlogging", "flash flood"],
+            "weather": ["storm", "hurricane", "tornado", "cyclone", "typhoon", 
                        "wildfire", "bushfire", "forest fire", "heat wave", "blizzard", 
                        "tsunami", "drought", "heavy rain"]
         }
