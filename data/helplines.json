@@ -1,0 +1,100 @@
+[
+  {
+    "region": "India",
+    "helpline_name": "National Emergency Number (ERSS)",
+    "phone": "112",
+    "description": "All-in-one emergency helpline for police, fire, ambulance, and disaster response.",
+    "source": "https://112.gov.in/"
+  },
+  {
+    "region": "India",
+    "helpline_name": "National Emergency Response Center, Disaster Management Division, Ministry of Home Affairs",
+    "phone": "011-23438252, 011-23438253, 011-1070",
+    "description": "Central disaster management helpline.",
+    "source": "https://ndma.gov.in/Response/Emergency-Operations-Center"
+  },
+  {
+    "region": "Bihar",
+    "helpline_name": "Bihar Disaster Management Control Room",
+    "phone": "+91-612-2294204, +91-612-2294205, +91-9431089514",
+    "description": "Flood and disaster helpline for Bihar.",
+    "source": "https://state.bihar.gov.in/disastermgmt"
+  },
+  {
+    "region": "Maharashtra",
+    "helpline_name": "Maharashtra Disaster Management Control Room",
+    "phone": "+91-22-22027990, +91-22-22794229, +91-8007902145",
+    "description": "Disaster management helpline for Maharashtra.",
+    "source": "https://rfd.maharashtra.gov.in/en"
+  },
+  {
+    "region": "Assam",
+    "helpline_name": "Assam State Disaster Management Authority",
+    "phone": "+91-361-2237219, +91-361-2237377, +91-9401044617, +91-9435592762",
+    "description": "Flood and disaster helpline for Assam.",
+    "source": "https://asdma.assam.gov.in/"
+  },
+  {
+    "region": "Delhi",
+    "helpline_name": "Delhi Disaster Management Authority",
+    "phone": "0107, 011-23982164, 23831077",
+    "description": "Disaster management helpline for Delhi.",
+    "source": "https://ddma.delhi.gov.in/"
+  },
+  {
+    "region": "Gujarat",
+    "helpline_name": "Gujarat State Disaster Management Authority",
+    "phone": "+91-79-23251900, +91-79-23251903",
+    "description": "Disaster management helpline for Gujarat.",
+    "source": "http://gsdma.org/"
+  },
+  {
+    "region": "Uttarakhand",
+    "helpline_name": "Uttarakhand State Disaster Management Authority",
+    "phone": "+91-135-2710334, +91-9152443853",
+    "description": "Disaster management helpline for Uttarakhand.",
+    "source": "https://usdma.uk.gov.in/"
+  },
+  {
+    "region": "West Bengal",
+    "helpline_name": "West Bengal Disaster Management Control Room",
+    "phone": "+91-33-22143526, 22141378",
+    "description": "Disaster management helpline for West Bengal.",
+    "source": "http://wbdmd.gov.in/Pages/Default.aspx"
+  },
+  {
+    "region": "Kerala",
+    "helpline_name": "Kerala State Disaster Management Authority",
+    "phone": "+91-471-2364424, 9400202927",
+    "description": "Disaster management helpline for Kerala.",
+    "source": "https://sdma.kerala.gov.in/"
+  },
+  {
+    "region": "Tamil Nadu",
+    "helpline_name": "Tamil Nadu State Emergency Operations Center",
+    "phone": "044-28593990, 044-28414513, 9445869849",
+    "description": "Disaster management helpline for Tamil Nadu.",
+    "source": "https://www.cra.tn.gov.in/disaster.php"
+  },
+  {
+    "region": "Punjab",
+    "helpline_name": "Punjab Disaster Management Control Room",
+    "phone": "0172-2740298, 2740397, 2740936, 2440035, +91-172-2720153",
+    "description": "Disaster management helpline for Punjab.",
+    "source": "https://revenue.punjab.gov.in/?q=floodsnatural-calamities"
+  },
+  {
+    "region": "Andhra Pradesh",
+    "helpline_name": "Andhra Pradesh State Disaster Management Authority",
+    "phone": "08645-246600, 8333905033, 0863-2377119, 2377120, 8333905022",
+    "description": "Disaster management helpline for Andhra Pradesh.",
+    "source": "http://apsdma.ap.gov.in/"
+  },
+  {
+    "region": "Chandigarh (UT)",
+    "helpline_name": "Chandigarh Disaster Management Control Room",
+    "phone": "+91-172-2704048, +91-9915557733",
+    "description": "Disaster management helpline for Chandigarh.",
+    "source": "https://chandigarh.gov.in/departments/other-departments/sdma"
+  }
+] 

@@ -1,0 +1,102 @@
+[
+  {
+    "disaster_type": "earthquake",
+    "name": "2001 Gujarat Earthquake",
+    "date": "2001-01-26",
+    "location": "Gujarat, India",
+    "magnitude": 7.7,
+    "casualties": 20000,
+    "description": "A devastating earthquake struck Gujarat, causing widespread destruction and loss of life.",
+    "sources": ["https://en.wikipedia.org/wiki/2001_Gujarat_earthquake"]
+  },
+  {
+    "disaster_type": "earthquake",
+    "name": "1993 Latur Earthquake",
+    "date": "1993-09-30",
+    "location": "Latur, Maharashtra, India",
+    "magnitude": 6.2,
+    "casualties": 9748,
+    "description": "A strong earthquake hit Latur, Maharashtra, resulting in thousands of deaths and widespread damage.",
+    "sources": ["https://en.wikipedia.org/wiki/1993_Latur_earthquake"]
+  },
+  {
+    "disaster_type": "earthquake",
+    "name": "2015 Nepal Earthquake (Impact in India)",
+    "date": "2015-04-25",
+    "location": "Bihar, Uttar Pradesh, West Bengal, India",
+    "magnitude": 7.8,
+    "casualties": 78,
+    "description": "The 2015 Nepal earthquake caused significant tremors and casualties in northern India.",
+    "sources": ["https://en.wikipedia.org/wiki/April_2015_Nepal_earthquake"]
+  },
+  {
+    "disaster_type": "earthquake",
+    "name": "1905 Kangra Earthquake",
+    "date": "1905-04-04",
+    "location": "Kangra, Himachal Pradesh, India",
+    "magnitude": 7.8,
+    "casualties": 20000,
+    "description": "A major earthquake struck Kangra, Himachal Pradesh, causing massive destruction and loss of life.",
+    "sources": ["https://en.wikipedia.org/wiki/1905_Kangra_earthquake"]
+  },
+  {
+    "disaster_type": "earthquake",
+    "name": "1934 Bihar Earthquake",
+    "date": "1934-01-15",
+    "location": "Bihar, India",
+    "magnitude": 8.0,
+    "casualties": 10000,
+    "description": "A powerful earthquake devastated Bihar, resulting in extensive damage and casualties.",
+    "sources": ["https://en.wikipedia.org/wiki/1934_Nepal%E2%80%93Bihar_earthquake"]
+  },
+  {
+    "disaster_type": "flood",
+    "name": "2013 North India Floods",
+    "date": "2013-06-14",
+    "location": "Uttarakhand, Himachal Pradesh, India",
+    "magnitude": null,
+    "casualties": 5700,
+    "description": "Heavy rainfall led to devastating floods and landslides in Uttarakhand and Himachal Pradesh.",
+    "sources": ["https://en.wikipedia.org/wiki/2013_North_India_floods"]
+  },
+  {
+    "disaster_type": "flood",
+    "name": "2008 Bihar Flood",
+    "date": "2008-08-18",
+    "location": "Bihar, India",
+    "magnitude": null,
+    "casualties": 500,
+    "description": "The Kosi River breached its embankment, causing massive flooding and displacement in Bihar.",
+    "sources": ["https://en.wikipedia.org/wiki/2008_Bihar_flood"]
+  },
+  {
+    "disaster_type": "flood",
+    "name": "2014 Kashmir Floods",
+    "date": "2014-09-02",
+    "location": "Jammu and Kashmir, India",
+    "magnitude": null,
+    "casualties": 500,
+    "description": "Widespread flooding in Jammu and Kashmir led to significant loss of life and property.",
+    "sources": ["https://en.wikipedia.org/wiki/2014_India%E2%80%93Pakistan_floods"]
+  },
+  {
+    "disaster_type": "flood",
+    "name": "2005 Maharashtra Floods",
+    "date": "2005-07-26",
+    "location": "Maharashtra, India",
+    "magnitude": null,
+    "casualties": 1094,
+    "description": "Record rainfall caused severe flooding in Mumbai and other parts of Maharashtra.",
+    "sources": ["https://en.wikipedia.org/wiki/2005_Maharashtra_floods"]
+  },
+  {
+    "disaster_type": "flood",
+    "name": "1987 Bihar Flood",
+    "date": "1987-08-01",
+    "location": "Bihar, India",
+    "magnitude": null,
+    "casualties": 1400,
+    "description": "One of the worst floods in Bihar's history, affecting millions and causing widespread devastation.",
+    "sources": ["https://en.wikipedia.org/wiki/1987_Bihar_flood"]
+  }
+] 

@@ -4,6 +4,9 @@ import torch.nn.functional as F
 from config import QUERY_TYPES, DISASTER_TYPES
 from textblob import TextBlob
 
+# Add new query type
+QUERY_TYPES["HELPLINE_INFO"] = "helpline_info"
+
 class QueryClassifier:
     def __init__(self):
         # Load a pre-trained model and tokenizer
@@ -146,6 +149,41 @@ class QueryClassifier:
                 "flood alert for today",
                 "flood alert for tomorrow",
                 "any flood warning for my area"
+            ],
+            QUERY_TYPES["HELPLINE_INFO"]: [
+                "helpline number",
+                "emergency number",
+                "disaster helpline",
+                "who to call in case of flood",
+                "earthquake helpline",
+                "flood helpline",
+                "emergency contact",
+                "emergency phone number",
+                "rescue helpline",
+                "relief helpline",
+                "disaster emergency number",
+                "emergency services number",
+                "help number for disaster",
+                "whom to contact during flood",
+                "whom to contact during earthquake",
+                "helpline for cyclone",
+                "helpline for landslide",
+                "helpline for disaster",
+                "emergency support number",
+                "Can you tell about helpline number for Mumbai?",
+                "What is the emergency contact for Mumbai?",
+                "Who do I call in a disaster in Mumbai?",
+                "What is the support number for Mumbai?",
+                "Contact number for disaster in Mumbai",
+                "Phone number for emergency in Mumbai",
+                "Support number for flood in Mumbai",
+                "How to contact help in Mumbai?",
+                "Who to call for help in Mumbai?",
+                "Give me the helpline for Mumbai",
+                "Give me the emergency number for Mumbai",
+                "Disaster support number for Mumbai",
+                "Rescue contact for Mumbai",
+                "Relief contact for Mumbai"
             ]
         }
         
@@ -216,7 +254,6 @@ class QueryClassifier:
         # Step 4: Query type detection (max similarity)
         similarities = {}
         for query_type, ref_embeddings in self.reference_embeddings.items():
-            # Use max similarity instead of mean
             similarity = max([
                 self._cosine_similarity(query_embedding, ref_embedding)
                 for ref_embedding in ref_embeddings
@@ -234,6 +271,10 @@ class QueryClassifier:
                 safety_keywords = ["should i do", "safety", "guidelines", "how to stay safe", "what to do", "protect yourself", "survive", "emergency response", "preparedness tips"]
                 hist_keywords = ["past", "history", "historical", "previous", "records", "statistics", "data"]
                 alert_keywords = ["alert", "warning", "forecast", "prediction", "upcoming", "next", "early warning"]
+                helpline_keywords = [
+                    "helpline", "emergency number", "emergency contact", "help number", "rescue number", "disaster helpline", "emergency phone", "whom to contact", "relief helpline",
+                    "contact number", "phone number", "support number", "call for help", "rescue contact", "relief contact", "emergency support", "emergency services", "who do i call", "how to contact help"
+                ]
                 if any(kw in query_lower for kw in safety_keywords):
                     result["query_type"] = QUERY_TYPES["SAFETY_GUIDELINES"]
                     result["confidence"] = 0.35
@@ -242,6 +283,9 @@ class QueryClassifier:
                     result["confidence"] = 0.35
                 elif any(kw in query_lower for kw in alert_keywords):
                     result["query_type"] = QUERY_TYPES["FUTURE_ALERTS"]
+                    result["confidence"] = 0.35
+                elif any(kw in query_lower for kw in helpline_keywords if kw in query_lower):
+                    result["query_type"] = QUERY_TYPES["HELPLINE_INFO"]
                     result["confidence"] = 0.35
         return result
 

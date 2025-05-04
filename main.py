@@ -5,6 +5,8 @@ from utils.response_generator import ResponseGenerator, generate_weather_respons
 from utils.weather_intent_parser import WeatherIntentParser
 from utils.weather_fetcher import WeatherFetcher
 from utils.weatherapi_com_fetcher import WeatherAPIComFetcher
+from utils.historical_knowledge_base import HistoricalKnowledgeBase
+from utils.helpline_knowledge_base import HelplineKnowledgeBase
 import os
 
 # Toggle between 'openweathermap' and 'weatherapi'
@@ -27,6 +29,9 @@ elif WEATHER_PROVIDER == 'weatherapi':
 else:
     raise ValueError(f"Unknown WEATHER_PROVIDER: {WEATHER_PROVIDER}")
 
+historical_kb = HistoricalKnowledgeBase()
+helpline_kb = HelplineKnowledgeBase()
+
 def chatbot(query):
     # Step 1: Classify query
     classification = query_classifier.classify_query(query)
@@ -42,6 +47,13 @@ def chatbot(query):
     print("[DEBUG] Time Periods:", time_periods)
 
     # Step 3: Route to appropriate handler
+    if query_type == "helpline_info":
+        loc_text = locations[0]["text"] if locations else None
+        return helpline_kb.get_summary(region=loc_text, disaster_type=disaster_type, top_n=3)
+    if query_type == "historical_info":
+        # Use first location if available
+        loc_text = locations[0]["text"] if locations else None
+        return historical_kb.get_summary(disaster_type=disaster_type, location=loc_text, top_n=3)
     if disaster_type == "weather":
         # If it's a safety guidelines query, allow no location (return general weather safety)
         if query_type == "safety_guidelines":
