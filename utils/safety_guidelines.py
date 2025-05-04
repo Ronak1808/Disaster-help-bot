@@ -149,30 +149,41 @@ SAFETY_GUIDELINES = {
 
 def get_safety_guidelines(disaster_type, phase=None):
     """
-    Get safety guidelines for a specific disaster type and phase.
-    
-    Args:
-        disaster_type (str): Type of disaster (e.g., 'earthquake', 'flood')
-        phase (str, optional): Phase of the disaster (e.g., 'before', 'during', 'after')
-                             For weather, can be 'general', 'heavy_rain', etc.
-    Returns:
-        list: List of safety guidelines
+    Get up to 6 concise, non-redundant safety guidelines for a specific disaster type and phase.
+    Prioritize: general > before/during/after > others. If phase is None, select up to 6 unique points.
     """
     if disaster_type not in SAFETY_GUIDELINES:
         return ["No safety guidelines available for this disaster type."]
-    
+
+    # Helper: flatten and deduplicate, keep order
+    def unique_points(points):
+        seen = set()
+        result = []
+        for p in points:
+            if p not in seen:
+                seen.add(p)
+                result.append(p)
+            if len(result) == 6:
+                break
+        return result
+
     if phase:
         if phase in SAFETY_GUIDELINES[disaster_type]:
-            return SAFETY_GUIDELINES[disaster_type][phase]
+            return unique_points(SAFETY_GUIDELINES[disaster_type][phase])
         elif "general" in SAFETY_GUIDELINES[disaster_type]:
-            return SAFETY_GUIDELINES[disaster_type]["general"]
+            return unique_points(SAFETY_GUIDELINES[disaster_type]["general"])
         else:
             return ["No specific guidelines available for this phase."]
-    
-    # If no phase specified, return all guidelines (before, during, after, general, etc.)
-    all_guidelines = []
+
+    # If no phase specified, prioritize general, then before/during/after, then others
+    all_points = []
+    if "general" in SAFETY_GUIDELINES[disaster_type]:
+        all_points.extend(SAFETY_GUIDELINES[disaster_type]["general"])
+    for key in ["before", "during", "after"]:
+        if key in SAFETY_GUIDELINES[disaster_type]:
+            all_points.extend(SAFETY_GUIDELINES[disaster_type][key])
+    # Add any other keys (e.g., weather subtypes)
     for key in SAFETY_GUIDELINES[disaster_type]:
-        all_guidelines.extend(SAFETY_GUIDELINES[disaster_type][key])
-    if all_guidelines:
-        return all_guidelines
-    return ["No safety guidelines available for this disaster type."] 
+        if key not in ("general", "before", "during", "after"):
+            all_points.extend(SAFETY_GUIDELINES[disaster_type][key])
+    return unique_points(all_points) 

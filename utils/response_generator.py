@@ -149,4 +149,28 @@ class ResponseGenerator:
             
             return "\n".join(response)
         
-        return "I'm sorry, I don't have safety guidelines for that type of disaster." 
+        return "I'm sorry, I don't have safety guidelines for that type of disaster."
+
+def generate_weather_response(weather_data):
+    if not weather_data or "error" in weather_data:
+        return weather_data.get("error", "Sorry, I couldn't fetch the weather information.")
+    if weather_data["type"] == "current":
+        return (
+            f"Current weather in {weather_data['location']}:\n"
+            f"- {weather_data['weather']}\n"
+            f"- Temperature: {weather_data['temperature']}°C\n"
+            f"- Humidity: {weather_data['humidity']}%\n"
+            f"- Wind speed: {weather_data['wind_speed']} m/s\n"
+            f"- Time: {weather_data['time']}"
+        )
+    elif weather_data["type"] == "forecast":
+        lines = ["Weather forecast:"]
+        for day in weather_data["days"]:
+            lines.append(
+                f"{day['date']}: {day['weather']}, "
+                f"Min: {day['temperature_min']}°C, Max: {day['temperature_max']}°C, "
+                f"Avg Humidity: {day['humidity_avg']:.0f}%, Avg Wind: {day['wind_speed_avg']:.1f} m/s"
+            )
+        return '\n'.join(lines)
+    else:
+        return "Sorry, I couldn't understand the weather data format." 

@@ -190,9 +190,10 @@ class QueryClassifier:
         disaster_terms = {
             "earthquake": ["earthquake", "quake", "tremor", "seismic", "tectonic", "epicenter"],
             "flood": ["flood", "flooding", "inundation", "deluge", "overflow", "waterlogging", "flash flood"],
-            "weather": ["storm", "hurricane", "tornado", "cyclone", "typhoon", 
-                       "wildfire", "bushfire", "forest fire", "heat wave", "blizzard", 
-                       "tsunami", "drought", "heavy rain"]
+            "weather": [
+                "weather", "weather information", "weather report", "weather forecast", "weather update", "weather condition",
+                "storm", "hurricane", "tornado", "cyclone", "typhoon", "wildfire", "bushfire", "forest fire", "heat wave", "blizzard", "tsunami", "drought", "heavy rain"
+            ]
         }
         # Try exact matching
         query_lower = corrected_query.lower()
