@@ -21,20 +21,24 @@ class HistoricalKnowledgeBase:
         results = sorted(results, key=lambda x: x["date"], reverse=True)
         return results[:top_n]
 
-    def format_event(self, event: dict) -> str:
-        s = f"{event['name']} ({event['date']}, {event['location']}): "
+    def format_event(self, event: dict, idx: int = None) -> str:
+        # Markdown formatted event
+        prefix = f"{idx + 1}. " if idx is not None else ""
+        s = f"{prefix}**{event['name']}**  "
+        s += f"\n   - **Date:** {event['date']}  "
+        s += f"\n   - **Location:** {event['location']}  "
         if event.get('magnitude'):
-            s += f"Magnitude {event['magnitude']}. "
+            s += f"\n   - **Magnitude:** {event['magnitude']}  "
         if event.get('casualties'):
-            s += f"Casualties: {event['casualties']}. "
-        s += event['description']
+            s += f"\n   - **Casualties:** {event['casualties']}  "
+        s += f"\n   - {event['description']}  "
         if event.get('sources'):
-            s += f" [Source]({event['sources'][0]})"
+            s += f"\n   - [Source]({event['sources'][0]})"
         return s
 
     def get_summary(self, disaster_type=None, location=None, keyword=None, top_n=3) -> str:
         events = self.search(disaster_type, location, keyword, top_n)
         if not events:
             return "No historical events found for your query."
-        lines = [self.format_event(e) for e in events]
-        return "\n".join(lines) 
+        lines = [self.format_event(e, idx) for idx, e in enumerate(events)]
+        return "\n\n".join(lines) 

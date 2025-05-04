@@ -70,7 +70,10 @@ class ResponseGenerator:
                             return f"[USGS API Error] {alerts['error']}"
                         if not alerts:
                             return f"No significant earthquakes forecasted in {loc['text']} for the specified period."
-                        response_lines = [f"Top {len(alerts)} earthquake events in {loc['text']}:"]
+                        if len(alerts) == 1:
+                            response_lines = [f"Earthquake event in {loc['text']}:"]
+                        else:
+                            response_lines = [f"Top {len(alerts)} earthquake events in {loc['text']}:"]
                         for i, event in enumerate(alerts, 1):
                             response_lines.append(
                                 f"{i}. Magnitude {event['magnitude']} at {event['place']} on {event['time']} (Depth: {event['depth']} km) [More info]({event['url']})"
@@ -85,7 +88,7 @@ class ResponseGenerator:
                         alerts = self.flood_alert_fetcher.fetch_alerts(loc['text'], loc['type'], time_periods)
                         if isinstance(alerts, dict) and 'error' in alerts:
                             return f"[GDACS API Error] {alerts['error']}"
-                        if not alerts:
+                        if not alerts or len(alerts) == 0:
                             return f"No significant flood alerts forecasted in {loc['text']} for the specified period."
                         response_lines = [f"Top {len(alerts)} flood alerts in {loc['text']}:"]
                         for i, event in enumerate(alerts, 1):
@@ -104,10 +107,7 @@ class ResponseGenerator:
         # Always use the disaster_type directly for top-level types
         guidelines = get_safety_guidelines(disaster_type, phase)
         response = [f"Here are the safety guidelines for {disaster_type}"]
-        if phase:
-            response.append(f"({phase} phase):")
-        else:
-            response.append(":")
+        response.append("")
         for i, guideline in enumerate(guidelines, 1):
             response.append(f"{i}. {guideline}")
         return "\n".join(response)
@@ -151,20 +151,32 @@ class ResponseGenerator:
         
         return "I'm sorry, I don't have safety guidelines for that type of disaster."
 
-def generate_weather_response(weather_data):
+def generate_weather_response(weather_data, user_query_location=None):
     if not weather_data or "error" in weather_data:
         return weather_data.get("error", "Sorry, I couldn't fetch the weather information.")
+    resolved_location = weather_data.get('location')
+    location_line = ""
+    if user_query_location and resolved_location and resolved_location.lower() != user_query_location.lower():
+        location_line = f"Showing weather for **{resolved_location}** (nearest to {user_query_location}):\n"
+    elif resolved_location:
+        location_line = f"Current weather in **{resolved_location}**:\n"
+    wind_speed = weather_data.get('wind_speed')
+    try:
+        wind_speed = float(wind_speed)
+        wind_speed = f"{wind_speed:.2f}"
+    except Exception:
+        wind_speed = weather_data.get('wind_speed')
     if weather_data["type"] == "current":
         return (
-            f"Current weather in {weather_data['location']}:\n"
+            f"{location_line}"
             f"- {weather_data['weather']}\n"
             f"- Temperature: {weather_data['temperature']}°C\n"
             f"- Humidity: {weather_data['humidity']}%\n"
-            f"- Wind speed: {weather_data['wind_speed']} m/s\n"
+            f"- Wind speed: {wind_speed} m/s\n"
             f"- Time: {weather_data['time']}"
         )
     elif weather_data["type"] == "forecast":
-        lines = ["Weather forecast:"]
+        lines = [location_line + "Weather forecast:"]
         for day in weather_data["days"]:
             lines.append(
                 f"{day['date']}: {day['weather']}, "
